@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zaid Industries — Engineering the Autonomous Future</title>
+  <meta name="description" content="Zaid Industries builds intelligent systems that automate real-world operations across engineering, robotics, and industrial environments." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#" class="nav__logo">
+        <svg class="nav__logo-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <polygon points="6,8 42,8 18,24 42,40 6,40 30,24" fill="none" stroke="#FF5A00" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="6,8 42,8 18,24 42,40 6,40 30,24" fill="url(#zGrad)" opacity="0.15"/>
+          <defs>
+            <linearGradient id="zGrad" x1="0" y1="0" x2="48" y2="48">
+              <stop offset="0%" stop-color="#FF5A00"/>
+              <stop offset="100%" stop-color="#FF8C00"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span class="nav__logo-text">ZAID INDUSTRIES</span>
+      </a>
+
+      <button class="nav__toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#systems">Systems</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#specs">Specs</a></li>
+        <li><a href="#contact" class="nav__cta">Get in Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero__grid-overlay" aria-hidden="true"></div>
+    <div class="hero__scan-line" aria-hidden="true"></div>
+
+    <div class="hero__inner">
+      <div class="hero__badge">
+        <span class="status-dot status-dot--active"></span>
+        SYSTEMS ONLINE
+      </div>
+
+      <h1 class="hero__heading">
+        Engineering the<br />
+        <span class="text-orange">Autonomous</span><br />
+        Future
+      </h1>
+
+      <p class="hero__sub">
+        Intelligent systems that automate real-world operations across
+        engineering, robotics, and industrial environments.
+      </p>
+
+      <div class="hero__actions">
+        <a href="#products" class="btn btn--primary">Explore Systems</a>
+        <a href="#contact" class="btn btn--ghost">Contact Us</a>
+      </div>
+
+      <div class="hero__stats">
+        <div class="hero__stat">
+          <span class="hero__stat-value" data-target="4">0</span>
+          <span class="hero__stat-label">Active Subsystems</span>
+        </div>
+        <div class="hero__stat-divider"></div>
+        <div class="hero__stat">
+          <span class="hero__stat-value" data-target="100">0</span><span class="hero__stat-suffix">%</span>
+          <span class="hero__stat-label">Automation-First</span>
+        </div>
+        <div class="hero__stat-divider"></div>
+        <div class="hero__stat">
+          <span class="hero__stat-value" data-target="24">0</span><span class="hero__stat-suffix">/7</span>
+          <span class="hero__stat-label">System Uptime</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__scroll-indicator" aria-hidden="true">
+      <span class="hero__scroll-text">SCROLL</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="about__layout">
+        <div class="about__left">
+          <div class="section-label">// ABOUT</div>
+          <h2 class="section-heading">Systems. Intelligence. <span class="text-orange">Control.</span></h2>
+          <p class="about__body">
+            Zaid Industries builds precision-engineered autonomous systems at the intersection of robotics, AI, and industrial operations. Every product is built to run with minimal human input — reliable, scalable, and intelligent by design.
+          </p>
+          <p class="about__body">
+            We don't build prototypes. We build infrastructure.
+          </p>
+
+          <div class="trait-grid">
+            <div class="trait">
+              <div class="trait__icon">⬡</div>
+              <span>Industrial</span>
+            </div>
+            <div class="trait">
+              <div class="trait__icon">◈</div>
+              <span>Intelligent</span>
+            </div>
+            <div class="trait">
+              <div class="trait__icon">◎</div>
+              <span>Precise</span>
+            </div>
+            <div class="trait">
+              <div class="trait__icon">◆</div>
+              <span>Powerful</span>
+            </div>
+            <div class="trait">
+              <div class="trait__icon">⬡</div>
+              <span>Modular</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="about__right">
+          <div class="terminal">
+            <div class="terminal__header">
+              <div class="terminal__dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="terminal__title">zi-status.sh</span>
+            </div>
+            <div class="terminal__body">
+              <div class="terminal__line">
+                <span class="terminal__prompt">$</span>
+                <span class="terminal__cmd"> zi status --all</span>
+              </div>
+              <div class="terminal__output">
+                <div class="terminal__entry">
+                  <span class="terminal__key">IQLabs</span>
+                  <span class="terminal__sep">............</span>
+                  <span class="status-tag status-tag--online">ONLINE</span>
+                </div>
+                <div class="terminal__entry">
+                  <span class="terminal__key">IQ-Rad</span>
+                  <span class="terminal__sep">.............</span>
+                  <span class="status-tag status-tag--online">ONLINE</span>
+                </div>
+                <div class="terminal__entry">
+                  <span class="terminal__key">IQ-One</span>
+                  <span class="terminal__sep">.............</span>
+                  <span class="status-tag status-tag--online">ONLINE</span>
+                </div>
+                <div class="terminal__entry">
+                  <span class="terminal__key">ZI Pool</span>
+                  <span class="terminal__sep">............</span>
+                  <span class="status-tag status-tag--online">ONLINE</span>
+                </div>
+                <div class="terminal__divider"></div>
+                <div class="terminal__entry">
+                  <span class="terminal__key">Core</span>
+                  <span class="terminal__sep">................</span>
+                  <span class="status-tag status-tag--online">NOMINAL</span>
+                </div>
+                <div class="terminal__entry">
+                  <span class="terminal__key">Uptime</span>
+                  <span class="terminal__sep">...............</span>
+                  <span class="terminal__val">99.97%</span>
+                </div>
+                <div class="terminal__entry">
+                  <span class="terminal__key">Automations</span>
+                  <span class="terminal__sep">...........</span>
+                  <span class="terminal__val terminal__val--orange" id="automationCount">0</span>
+                </div>
+              </div>
+              <div class="terminal__line terminal__line--blink">
+                <span class="terminal__prompt">$</span>
+                <span class="terminal__cursor">▋</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYSTEMS -->
+  <section class="section section--dark" id="systems">
+    <div class="container">
+      <div class="section-label">// CORE SYSTEMS</div>
+      <h2 class="section-heading">Built to Automate <span class="text-orange">Everything</span></h2>
+      <p class="section-sub">Every layer of the stack — sensors, compute, agents, and operations — engineered as a unified system.</p>
+
+      <div class="systems__grid">
+        <div class="system-card">
+          <div class="system-card__number">01</div>
+          <div class="system-card__icon-wrap">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="4" width="14" height="14" stroke="#FF5A00" stroke-width="1.5" rx="1"/>
+              <rect x="22" y="4" width="14" height="14" stroke="#FF5A00" stroke-width="1.5" rx="1"/>
+              <rect x="4" y="22" width="14" height="14" stroke="#FF5A00" stroke-width="1.5" rx="1"/>
+              <rect x="22" y="22" width="14" height="14" stroke="#C0C0C0" stroke-width="1.5" rx="1"/>
+              <circle cx="29" cy="29" r="3" fill="#FF5A00"/>
+            </svg>
+          </div>
+          <h3 class="system-card__title">Modular Architecture</h3>
+          <p class="system-card__desc">Every subsystem is independently deployable. Plug in what you need. Remove what you don't. Zero coupling, maximum control.</p>
+        </div>
+
+        <div class="system-card">
+          <div class="system-card__number">02</div>
+          <div class="system-card__icon-wrap">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="14" stroke="#FF5A00" stroke-width="1.5"/>
+              <circle cx="20" cy="20" r="8" stroke="#C0C0C0" stroke-width="1.5"/>
+              <circle cx="20" cy="20" r="3" fill="#FF5A00"/>
+              <line x1="20" y1="6" x2="20" y2="12" stroke="#FF5A00" stroke-width="1.5"/>
+              <line x1="20" y1="28" x2="20" y2="34" stroke="#FF5A00" stroke-width="1.5"/>
+              <line x1="6" y1="20" x2="12" y2="20" stroke="#FF5A00" stroke-width="1.5"/>
+              <line x1="28" y1="20" x2="34" y2="20" stroke="#FF5A00" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <h3 class="system-card__title">Real-Time Intelligence</h3>
+          <p class="system-card__desc">AI agents process sensor data, detect anomalies, and execute responses without human latency. Fast, accurate, continuous.</p>
+        </div>
+
+        <div class="system-card">
+          <div class="system-card__number">03</div>
+          <div class="system-card__icon-wrap">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="4,28 12,16 20,22 28,10 36,18" stroke="#FF5A00" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+              <circle cx="36" cy="18" r="2.5" fill="#FF5A00"/>
+              <line x1="4" y1="34" x2="36" y2="34" stroke="#1A1A1A" stroke-width="0"/>
+              <rect x="3" y="33" width="34" height="1" fill="#C0C0C0" opacity="0.3"/>
+            </svg>
+          </div>
+          <h3 class="system-card__title">Full Observability</h3>
+          <p class="system-card__desc">Every event logged. Every metric tracked. Dashboards surface what matters. Nothing operates in the dark.</p>
+        </div>
+
+        <div class="system-card">
+          <div class="system-card__number">04</div>
+          <div class="system-card__icon-wrap">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="8" y="12" width="24" height="18" rx="2" stroke="#FF5A00" stroke-width="1.5"/>
+              <line x1="14" y1="12" x2="14" y2="30" stroke="#C0C0C0" stroke-width="1" opacity="0.5"/>
+              <line x1="20" y1="12" x2="20" y2="30" stroke="#C0C0C0" stroke-width="1" opacity="0.5"/>
+              <line x1="26" y1="12" x2="26" y2="30" stroke="#C0C0C0" stroke-width="1" opacity="0.5"/>
+              <line x1="8" y1="18" x2="32" y2="18" stroke="#C0C0C0" stroke-width="1" opacity="0.5"/>
+              <line x1="8" y1="24" x2="32" y2="24" stroke="#C0C0C0" stroke-width="1" opacity="0.5"/>
+              <rect x="14" y="18" width="6" height="6" fill="#FF5A00" opacity="0.8"/>
+              <rect x="20" y="12" width="6" height="6" fill="#FF8C00" opacity="0.6"/>
+            </svg>
+          </div>
+          <h3 class="system-card__title">Industrial-Grade Hardware</h3>
+          <p class="system-card__desc">Engineered for harsh environments. Enclosures, sensors, and embedded compute built to spec — not off the shelf and hoped for the best.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="section" id="products">
+    <div class="container">
+      <div class="section-label">// PRODUCT ECOSYSTEM</div>
+      <h2 class="section-heading">Subsystems of <span class="text-orange">Zaid Industries</span></h2>
+      <p class="section-sub">Each product follows the IQ naming system — unified, scalable, and built under a single brand architecture.</p>
+
+      <div class="products__grid">
+
+        <div class="product-card product-card--featured">
+          <div class="product-card__header">
+            <div class="product-card__badge">FLAGSHIP</div>
+            <div class="product-card__status">
+              <span class="status-dot status-dot--active"></span> ACTIVE
+            </div>
+          </div>
+          <div class="product-card__tag">IQLabs</div>
+          <h3 class="product-card__name">Lab Automation System</h3>
+          <p class="product-card__desc">
+            Full-stack automation for laboratory environments. Sample tracking, protocol execution, instrument control, and data pipelines — unified under one intelligent system.
+          </p>
+          <ul class="product-card__features">
+            <li>Automated protocol execution</li>
+            <li>Real-time instrument monitoring</li>
+            <li>Sample lifecycle tracking</li>
+            <li>Integrated data pipelines</li>
+          </ul>
+          <div class="product-card__footer">
+            <span class="product-card__serial">SN: IQL-CORE-001</span>
+            <a href="#contact" class="btn btn--primary btn--sm">Request Access</a>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-card__header">
+            <div class="product-card__badge product-card__badge--alt">MONITORING</div>
+            <div class="product-card__status">
+              <span class="status-dot status-dot--active"></span> ACTIVE
+            </div>
+          </div>
+          <div class="product-card__tag">IQ-Rad</div>
+          <h3 class="product-card__name">Radiation Monitoring</h3>
+          <p class="product-card__desc">
+            Continuous radiation detection and alerting with intelligent threshold management. Sensor arrays, real-time dashboards, and automated incident response.
+          </p>
+          <ul class="product-card__features">
+            <li>Multi-sensor array support</li>
+            <li>Automated alert escalation</li>
+            <li>Compliance-ready logging</li>
+          </ul>
+          <div class="product-card__footer">
+            <span class="product-card__serial">SN: IQR-MODULE-001</span>
+            <a href="#contact" class="btn btn--ghost btn--sm">Learn More</a>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-card__header">
+            <div class="product-card__badge product-card__badge--alt">AI AGENTS</div>
+            <div class="product-card__status">
+              <span class="status-dot status-dot--active"></span> ACTIVE
+            </div>
+          </div>
+          <div class="product-card__tag">IQ-One</div>
+          <h3 class="product-card__name">AI Agent System</h3>
+          <p class="product-card__desc">
+            Autonomous AI agents that handle complex multi-step tasks across systems. Orchestration layer for decision-making, workflow automation, and intelligent routing.
+          </p>
+          <ul class="product-card__features">
+            <li>Multi-agent orchestration</li>
+            <li>Tool-use & API integration</li>
+            <li>Persistent memory & context</li>
+          </ul>
+          <div class="product-card__footer">
+            <span class="product-card__serial">SN: IQO-AGENT-001</span>
+            <a href="#contact" class="btn btn--ghost btn--sm">Learn More</a>
+          </div>
+        </div>
+
+        <div class="product-card">
+          <div class="product-card__header">
+            <div class="product-card__badge product-card__badge--alt">SERVICE OPS</div>
+            <div class="product-card__status">
+              <span class="status-dot status-dot--active"></span> ACTIVE
+            </div>
+          </div>
+          <div class="product-card__tag">ZI Pool</div>
+          <h3 class="product-card__name">Service Automation</h3>
+          <p class="product-card__desc">
+            Automated scheduling, routing, and service management for operational teams. Reduces manual dispatch overhead and keeps operations running without bottlenecks.
+          </p>
+          <ul class="product-card__features">
+            <li>Smart scheduling engine</li>
+            <li>Team dispatch automation</li>
+            <li>Operations analytics</li>
+          </ul>
+          <div class="product-card__footer">
+            <span class="product-card__serial">SN: ZIP-OPS-001</span>
+            <a href="#contact" class="btn btn--ghost btn--sm">Learn More</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SPECS / TECH -->
+  <section class="section section--dark" id="specs">
+    <div class="container">
+      <div class="section-label">// TECHNICAL SPECS</div>
+      <h2 class="section-heading">Built on <span class="text-orange">Real Engineering</span></h2>
+
+      <div class="specs__layout">
+        <div class="specs__left">
+          <div class="spec-group">
+            <div class="spec-group__title">Hardware Layer</div>
+            <div class="spec-row">
+              <span class="spec-row__key">Enclosure Rating</span>
+              <span class="spec-row__val">IP65 / Industrial</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Embedded Compute</span>
+              <span class="spec-row__val">ARM Cortex / x86</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Sensor Interfaces</span>
+              <span class="spec-row__val">I2C / SPI / UART / CAN</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Power Input</span>
+              <span class="spec-row__val">9–36V DC</span>
+            </div>
+          </div>
+
+          <div class="spec-group">
+            <div class="spec-group__title">Software Layer</div>
+            <div class="spec-row">
+              <span class="spec-row__key">Runtime</span>
+              <span class="spec-row__val">Linux / RTOS</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">AI Engine</span>
+              <span class="spec-row__val">Claude API / Local LLM</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Comms</span>
+              <span class="spec-row__val">MQTT / REST / WebSocket</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Data Store</span>
+              <span class="spec-row__val">Time-series + Relational</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="specs__right">
+          <div class="spec-group">
+            <div class="spec-group__title">Operations Layer</div>
+            <div class="spec-row">
+              <span class="spec-row__key">Deployment</span>
+              <span class="spec-row__val">Edge + Cloud Hybrid</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Uptime Target</span>
+              <span class="spec-row__val">99.9%</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Alerting</span>
+              <span class="spec-row__val">SMS / Email / Webhook</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Auth</span>
+              <span class="spec-row__val">Role-Based + MFA</span>
+            </div>
+          </div>
+
+          <div class="spec-group">
+            <div class="spec-group__title">Compliance</div>
+            <div class="spec-row">
+              <span class="spec-row__key">Data Logging</span>
+              <span class="spec-row__val">Tamper-evident</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Audit Trail</span>
+              <span class="spec-row__val">Full event history</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Export Formats</span>
+              <span class="spec-row__val">CSV / JSON / PDF</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-row__key">Encryption</span>
+              <span class="spec-row__val">AES-256 at rest/transit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / CONTACT -->
+  <section class="section section--cta" id="contact">
+    <div class="container">
+      <div class="cta__inner">
+        <div class="section-label">// GET IN CONTACT</div>
+        <h2 class="cta__heading">
+          Ready to <span class="text-orange">Automate</span>?
+        </h2>
+        <p class="cta__sub">
+          Tell us what you're building. We'll tell you how to automate it.
+        </p>
+
+        <form class="contact-form" id="contactForm">
+          <div class="contact-form__row">
+            <div class="contact-form__group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your name" required />
+            </div>
+            <div class="contact-form__group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="your@company.com" required />
+            </div>
+          </div>
+          <div class="contact-form__group">
+            <label for="subject">Subject</label>
+            <select id="subject" name="subject">
+              <option value="">Select a system...</option>
+              <option value="iqlabs">IQLabs — Lab Automation</option>
+              <option value="iq-rad">IQ-Rad — Radiation Monitoring</option>
+              <option value="iq-one">IQ-One — AI Agent System</option>
+              <option value="zi-pool">ZI Pool — Service Automation</option>
+              <option value="general">General Inquiry</option>
+            </select>
+          </div>
+          <div class="contact-form__group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Describe what you're trying to automate..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn--primary btn--full">
+            <span>Send Message</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </form>
+
+        <div class="contact-form__success" id="formSuccess">
+          <span class="status-dot status-dot--active"></span>
+          Message received. We'll respond within 24 hours.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <a href="#" class="nav__logo">
+            <svg class="nav__logo-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <polygon points="6,8 42,8 18,24 42,40 6,40 30,24" fill="none" stroke="#FF5A00" stroke-width="3" stroke-linejoin="round"/>
+            </svg>
+            <span class="nav__logo-text">ZAID INDUSTRIES</span>
+          </a>
+          <p class="footer__tagline">Engineering the Autonomous Future</p>
+        </div>
+
+        <div class="footer__links">
+          <div class="footer__col">
+            <div class="footer__col-title">Systems</div>
+            <a href="#products">IQLabs</a>
+            <a href="#products">IQ-Rad</a>
+            <a href="#products">IQ-One</a>
+            <a href="#products">ZI Pool</a>
+          </div>
+          <div class="footer__col">
+            <div class="footer__col-title">Company</div>
+            <a href="#about">About</a>
+            <a href="#systems">Technology</a>
+            <a href="#specs">Specs</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <span class="footer__copy">© 2026 Zaid Industries. All rights reserved.</span>
+        <div class="footer__hardware-tag">
+          <span class="mono">ZAID INDUSTRIES · CORE-SYS · SN: ZI-WEB-001</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
