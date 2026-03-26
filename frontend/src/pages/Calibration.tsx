@@ -66,7 +66,7 @@ export const Calibration: React.FC = () => {
     setShowSignModal(true);
   };
 
-  const handleSignConfirm = async (password: string, comment?: string) => {
+  const handleSignConfirm = async (password: string, _comment?: string) => {
     if (!pendingForm) return;
     await api.post('/calibration', {
       ...pendingForm,

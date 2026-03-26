@@ -114,7 +114,7 @@ export const AlarmConsole: React.FC = () => {
                   </span>
                 </td>
                 <td style={{ padding: '9px 12px', color: '#64748b', fontSize: 12 }}>
-                  {format(new Date(alarm.triggered_at), 'yyyy-MM-dd HH:mm:ss')}
+                  {format(new Date(alarm.triggered_at_utc), 'yyyy-MM-dd HH:mm:ss')}
                 </td>
                 <td style={{ padding: '9px 12px' }}>
                   {alarm.alarm_state === 'ACTIVE' && (

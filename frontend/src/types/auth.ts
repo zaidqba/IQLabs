@@ -1,4 +1,5 @@
 import { UserRole } from './common';
+export type { UserRole };
 
 export interface LoginRequest {
   username: string;

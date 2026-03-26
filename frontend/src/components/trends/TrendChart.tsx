@@ -6,7 +6,7 @@
 import React from 'react';
 import {
   ComposedChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ReferenceLine, Brush, ResponsiveContainer, Legend,
+  ReferenceLine, Brush, ResponsiveContainer,
 } from 'recharts';
 import { format } from 'date-fns';
 import { Reading } from '../../types/readings';

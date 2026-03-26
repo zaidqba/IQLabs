@@ -29,18 +29,14 @@ const AppWithWS: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
     wsClient.connect(accessToken);
 
-    wsClient.on('reading', (msg) => updateReading(msg.data));
-    wsClient.on('alarm', (msg) => updateAlarm(msg.data));
-    wsClient.on('alarms_snapshot', (msg) => setActiveAlarms(msg.data));
-    wsClient.on('device_status', () => {});
-    wsClient.on('heartbeat', (msg) => setNtpStatus(msg.data?.ntp_valid ?? true));
+    const offReading = wsClient.on('reading', (msg) => updateReading(msg.data));
+    const offAlarm = wsClient.on('alarm', (msg) => updateAlarm(msg.data));
+    const offSnapshot = wsClient.on('alarms_snapshot', (msg) => setActiveAlarms(msg.data));
+    const offDevice = wsClient.on('device_status', () => {});
+    const offHb = wsClient.on('heartbeat', (msg) => setNtpStatus(msg.data?.ntp_valid ?? true));
 
     return () => {
-      wsClient.off('reading');
-      wsClient.off('alarm');
-      wsClient.off('alarms_snapshot');
-      wsClient.off('device_status');
-      wsClient.off('heartbeat');
+      offReading(); offAlarm(); offSnapshot(); offDevice(); offHb();
     };
   }, [isAuthenticated, accessToken]);
 

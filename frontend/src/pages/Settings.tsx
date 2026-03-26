@@ -75,7 +75,7 @@ export const Settings: React.FC = () => {
     setShowSignModal(true);
   };
 
-  const handleSignConfirm = async (password: string, comment?: string) => {
+  const handleSignConfirm = async (password: string, _comment?: string) => {
     if (!pendingPayload || !selectedChannel) return;
     await api.patch(`/channels/${selectedChannel}/thresholds`, {
       ...pendingPayload,

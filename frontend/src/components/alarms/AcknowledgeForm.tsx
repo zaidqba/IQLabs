@@ -4,7 +4,7 @@
  * DANGER/HIGH_DOSE alarms require electronic signature (re-authentication).
  * All alarms require a minimum 10-character comment.
  */
-import React, { useState } from 'react';
+import React from 'react';
 import { Alarm } from '../../types/alarms';
 import { SignatureModal } from '../common/SignatureModal';
 import { useAuthStore } from '../../store/authStore';
@@ -18,7 +18,7 @@ interface Props {
 
 export const AcknowledgeForm: React.FC<Props> = ({ alarm, onClose, onAcknowledged }) => {
   const { user } = useAuthStore();
-  const [showSig, setShowSig] = useState(true);
+  const showSig = true;
 
   const handleConfirm = async (password: string, comment?: string) => {
     await api.post(`/alarms/${alarm.alarm_id}/acknowledge`, {
