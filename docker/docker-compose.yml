@@ -1,0 +1,126 @@
+version: "3.9"
+
+# ─── IQ-RAD Development Docker Compose ────────────────────────────────────────
+# FOR DEVELOPMENT AND TESTING ONLY.
+# Production deployment targets the existing Ionetix3/SQLEXPRESS instance.
+# The sqlserver service here is a dev-only container.
+
+services:
+
+  # ─── SQL Server (Dev/Test only) ────────────────────────────────────────────
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: iq_rad_sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "${SA_PASSWORD:-DevOnly_StrongPwd1!}"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - ../database/schema:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: >
+        /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa
+        -P "${SA_PASSWORD:-DevOnly_StrongPwd1!}"
+        -Q "SELECT 1" -C -b
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      - iq_rad_net
+
+  # ─── DB Init (creates IQ_RAD database and runs schema) ────────────────────
+  db_init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: iq_rad_db_init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      SA_PASSWORD: "${SA_PASSWORD:-DevOnly_StrongPwd1!}"
+    volumes:
+      - ../database/schema:/schema:ro
+    entrypoint: >
+      bash -c "
+        /opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -P $$SA_PASSWORD -C -Q
+          'CREATE DATABASE IQ_RAD' 2>/dev/null || true &&
+        for f in /schema/0*.sql; do
+          echo \"Running $$f\";
+          /opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -P $$SA_PASSWORD -C -d IQ_RAD -i $$f;
+        done &&
+        echo 'DB init complete'
+      "
+    networks:
+      - iq_rad_net
+    restart: on-failure
+
+  # ─── Backend ───────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/backend/Dockerfile
+    container_name: iq_rad_backend
+    env_file:
+      - ../.env
+    environment:
+      DATABASE_URL: "mssql+pyodbc://sa:${SA_PASSWORD:-DevOnly_StrongPwd1!}@sqlserver:1433/IQ_RAD?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+    ports:
+      - "8000:8000"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      db_init:
+        condition: service_completed_successfully
+    volumes:
+      - ../backend:/app
+      - backend_reports:/app/reports
+    networks:
+      - iq_rad_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─── Frontend ──────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: ../docker/frontend/Dockerfile
+      args:
+        VITE_API_BASE_URL: "http://localhost:8000/api/v1"
+        VITE_WS_URL: "ws://localhost:8000/api/v1/ws/live"
+    container_name: iq_rad_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - iq_rad_net
+    restart: unless-stopped
+
+  # ─── Nginx Reverse Proxy ───────────────────────────────────────────────────
+  nginx:
+    build:
+      context: ../docker/nginx
+    container_name: iq_rad_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - iq_rad_net
+    restart: unless-stopped
+
+volumes:
+  sqlserver_data:
+  backend_reports:
+
+networks:
+  iq_rad_net:
+    driver: bridge
