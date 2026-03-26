@@ -1,13 +1,23 @@
 version: "3.9"
 
-# ─── IQ-RAD Development Docker Compose ────────────────────────────────────────
-# FOR DEVELOPMENT AND TESTING ONLY.
-# Production deployment targets the existing Ionetix3/SQLEXPRESS instance.
-# The sqlserver service here is a dev-only container.
+# ─── IQ-RAD — Fully Isolated Deployment ───────────────────────────────────────
+# All resources prefixed iq_rad_ to avoid collisions with anything else
+# on iqlabsserver1.
+#
+# External port:  IQ_RAD_PORT (default 8088) — only port exposed to LAN
+# Internal ports: backend:8000, frontend:80, sqlserver:1433 are all
+#                 container-internal and NOT reachable from the host.
+#
+# Before starting:
+#   1. cp .env.example .env  (or ensure .env exists in ~/iq-rad/)
+#   2. Check IQ_RAD_PORT=8088 doesn't conflict: ss -tlnp | grep 8088
+#   3. docker compose up --build -d
+
+name: iq_rad   # Docker Compose project name — namespaces ALL resources
 
 services:
 
-  # ─── SQL Server (Dev/Test only) ────────────────────────────────────────────
+  # ─── SQL Server (Dev/Test only — not exposed to host) ──────────────────────
   sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: iq_rad_sqlserver
@@ -15,10 +25,11 @@ services:
       ACCEPT_EULA: "Y"
       SA_PASSWORD: "${SA_PASSWORD:-DevOnly_StrongPwd1!}"
       MSSQL_PID: "Express"
-    ports:
-      - "1433:1433"
+    # Port 1433 NOT published to host — only reachable inside iq_rad_net
+    expose:
+      - "1433"
     volumes:
-      - sqlserver_data:/var/opt/mssql
+      - iq_rad_sqlserver_data:/var/opt/mssql
       - ../database/schema:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: >
@@ -31,8 +42,9 @@ services:
       start_period: 30s
     networks:
       - iq_rad_net
+    restart: unless-stopped
 
-  # ─── DB Init (creates IQ_RAD database and runs schema) ────────────────────
+  # ─── DB Init ───────────────────────────────────────────────────────────────
   db_init:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: iq_rad_db_init
@@ -46,7 +58,7 @@ services:
     entrypoint: >
       bash -c "
         /opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -P $$SA_PASSWORD -C -Q
-          'CREATE DATABASE IQ_RAD' 2>/dev/null || true &&
+          'IF NOT EXISTS (SELECT name FROM sys.databases WHERE name=''IQ_RAD'') CREATE DATABASE IQ_RAD' &&
         for f in /schema/0*.sql; do
           echo \"Running $$f\";
           /opt/mssql-tools18/bin/sqlcmd -S sqlserver -U sa -P $$SA_PASSWORD -C -d IQ_RAD -i $$f;
@@ -57,7 +69,7 @@ services:
       - iq_rad_net
     restart: on-failure
 
-  # ─── Backend ───────────────────────────────────────────────────────────────
+  # ─── Backend — NOT exposed to host, only reachable via nginx ───────────────
   backend:
     build:
       context: ../backend
@@ -67,8 +79,8 @@ services:
       - ../.env
     environment:
       DATABASE_URL: "mssql+pyodbc://sa:${SA_PASSWORD:-DevOnly_StrongPwd1!}@sqlserver:1433/IQ_RAD?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -76,7 +88,7 @@ services:
         condition: service_completed_successfully
     volumes:
       - ../backend:/app
-      - backend_reports:/app/reports
+      - iq_rad_reports:/app/reports
     networks:
       - iq_rad_net
     restart: unless-stopped
@@ -84,43 +96,61 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
-      retries: 3
+      retries: 5
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
 
-  # ─── Frontend ──────────────────────────────────────────────────────────────
+  # ─── Frontend — NOT exposed to host, only reachable via nginx ──────────────
   frontend:
     build:
       context: ../frontend
       dockerfile: ../docker/frontend/Dockerfile
       args:
-        VITE_API_BASE_URL: "http://localhost:8000/api/v1"
-        VITE_WS_URL: "ws://localhost:8000/api/v1/ws/live"
+        # Relative URL — works through nginx regardless of port
+        VITE_API_BASE_URL: "/api/v1"
+        VITE_WS_URL: "${VITE_WS_URL:-ws://100.116.165.41:8088/api/v1/ws/live}"
     container_name: iq_rad_frontend
-    ports:
-      - "3000:80"
+    expose:
+      - "80"
     depends_on:
       - backend
     networks:
       - iq_rad_net
     restart: unless-stopped
 
-  # ─── Nginx Reverse Proxy ───────────────────────────────────────────────────
+  # ─── Nginx — ONLY container with a host port ───────────────────────────────
   nginx:
     build:
       context: ../docker/nginx
     container_name: iq_rad_nginx
     ports:
-      - "80:80"
+      # Change IQ_RAD_PORT in .env if 8088 conflicts with something else
+      - "${IQ_RAD_PORT:-8088}:80"
     depends_on:
-      - backend
-      - frontend
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
     networks:
       - iq_rad_net
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
-  sqlserver_data:
-  backend_reports:
+  iq_rad_sqlserver_data:    # Prefixed — won't clash with other SQL Server volumes
+    driver: local
+  iq_rad_reports:           # Prefixed — isolated PDF report storage
+    driver: local
 
 networks:
   iq_rad_net:
+    name: iq_rad_network    # Explicit name — won't auto-merge with other networks
     driver: bridge
