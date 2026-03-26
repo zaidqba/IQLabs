@@ -1,0 +1,87 @@
+version: "3.9"
+
+# ─── IQ-RAD Production Deployment ─────────────────────────────────────────────
+# Target: iqlabsserver1 (100.116.165.41)
+# SQL Server: connects to existing Ionetix3/SQLEXPRESS on the LAN
+# Rotem Stack:  10.0.0.160:4001
+# Rotem DPU3:   10.0.0.160:5000
+#
+# Usage:
+#   cp .env.production .env
+#   # Edit .env with real values
+#   docker compose -f docker-compose.prod.yml up -d
+
+services:
+
+  # ─── Backend API ─────────────────────────────────────────────────────────────
+  backend:
+    image: iq-rad-backend:latest
+    build:
+      context: ../backend
+      dockerfile: ../docker/backend/Dockerfile
+    container_name: iq_rad_backend
+    env_file: .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - reports_data:/app/reports
+    networks:
+      - iq_rad_net
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
+        max-file: "5"
+
+  # ─── Frontend (Vite build served by nginx) ────────────────────────────────────
+  frontend:
+    image: iq-rad-frontend:latest
+    build:
+      context: ../frontend
+      dockerfile: ../docker/frontend/Dockerfile
+      args:
+        VITE_API_BASE_URL: "http://100.116.165.41/api/v1"
+        VITE_WS_URL: "ws://100.116.165.41/api/v1/ws/live"
+    container_name: iq_rad_frontend
+    networks:
+      - iq_rad_net
+    restart: unless-stopped
+
+  # ─── Nginx Reverse Proxy ─────────────────────────────────────────────────────
+  nginx:
+    image: iq-rad-nginx:latest
+    build:
+      context: ../docker/nginx
+    container_name: iq_rad_nginx
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_started
+    networks:
+      - iq_rad_net
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  reports_data:
+    driver: local
+
+networks:
+  iq_rad_net:
+    driver: bridge
