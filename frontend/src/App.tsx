@@ -15,30 +15,38 @@ import { useAuthStore } from './store/authStore';
 import { wsClient } from './services/websocket';
 import { useReadingsStore } from './store/readingsStore';
 import { useAlarmStore } from './store/alarmStore';
+import type { LatestReading } from './types/readings';
+import type { Alarm } from './types/alarms';
 
 const AppWithWS: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, accessToken } = useAuthStore();
+  const { isAuthenticated } = useAuthStore();
   const { updateReading, setNtpStatus } = useReadingsStore();
   const { setActiveAlarms, updateAlarm } = useAlarmStore();
 
   useEffect(() => {
-    if (!isAuthenticated || !accessToken) {
+    if (!isAuthenticated) {
       wsClient.disconnect();
       return;
     }
 
-    wsClient.connect(accessToken);
+    wsClient.connect();
 
-    const offReading = wsClient.on('reading', (msg) => updateReading(msg.data));
-    const offAlarm = wsClient.on('alarm', (msg) => updateAlarm(msg.data));
-    const offSnapshot = wsClient.on('alarms_snapshot', (msg) => setActiveAlarms(msg.data));
+    const offReading = wsClient.on('reading', (msg) => updateReading(msg.data as LatestReading));
+    const offAlarm = wsClient.on('alarm', (msg) => {
+      const a = msg.data as Alarm;
+      updateAlarm(a.alarm_id, a);
+    });
+    const offSnapshot = wsClient.on('alarms_snapshot', (msg) => setActiveAlarms(msg.data as Alarm[]));
     const offDevice = wsClient.on('device_status', () => {});
-    const offHb = wsClient.on('heartbeat', (msg) => setNtpStatus(msg.data?.ntp_valid ?? true));
+    const offHb = wsClient.on('heartbeat', (msg) => {
+      const d = msg.data as { ntp_valid?: boolean; offset_ms?: number };
+      setNtpStatus(d?.ntp_valid ?? true, d?.offset_ms ?? null);
+    });
 
     return () => {
       offReading(); offAlarm(); offSnapshot(); offDevice(); offHb();
     };
-  }, [isAuthenticated, accessToken]);
+  }, [isAuthenticated]);
 
   return <>{children}</>;
 };
