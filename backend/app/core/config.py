@@ -48,6 +48,11 @@ class Settings(BaseSettings):
     jwt_refresh_expire_hours: int = 8
     login_max_failures: int = 5
 
+    # ─── Bootstrap ────────────────────────────────────────────────────────────
+    # Set this to seed the iqrad_admin password on first startup.
+    # Once set, the hash in the DB is updated and this var can be cleared.
+    iqrad_admin_password: Optional[str] = "IqRad_Admin1!"
+
     # ─── NTP ──────────────────────────────────────────────────────────────────
     ntp_server: str = "pool.ntp.org"
     max_ntp_drift_ms: int = 500

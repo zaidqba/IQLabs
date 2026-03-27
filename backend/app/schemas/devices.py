@@ -55,6 +55,10 @@ class AlarmProfileResponse(BaseModel):
     effective_from: datetime
     effective_to: Optional[datetime]
     change_reason: str
+    changed_by_username: Optional[str] = None
+
+    class Config:
+        from_attributes = True
 
 
 class UpdateThresholdRequest(BaseModel):

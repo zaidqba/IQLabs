@@ -35,6 +35,29 @@ logger = get_logger(__name__)
 _ingestion_task = None
 
 
+async def _bootstrap_admin_password() -> None:
+    """Set iqrad_admin password on first startup if still using placeholder hash."""
+    if not settings.iqrad_admin_password:
+        return
+    from sqlalchemy import text
+    from app.core.database import AsyncSessionLocal
+    from app.core.security import hash_password
+    placeholder = "$2b$12$placeholder"
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            text("SELECT user_id, hashed_password FROM users WHERE username = 'iqrad_admin'")
+        )
+        row = result.one_or_none()
+        if row and row.hashed_password.startswith(placeholder):
+            new_hash = hash_password(settings.iqrad_admin_password)
+            await session.execute(
+                text("UPDATE users SET hashed_password = :h WHERE username = 'iqrad_admin'"),
+                {"h": new_hash},
+            )
+            await session.commit()
+            logger.info("admin_password_bootstrapped", extra={"username": "iqrad_admin"})
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Startup: verify DB, start ingestion pipeline. Shutdown: stop cleanly."""
@@ -48,6 +71,9 @@ async def lifespan(app: FastAPI):
         raise RuntimeError("Cannot connect to database — IQ-RAD cannot start")
 
     logger.info("database_connected")
+
+    # Bootstrap admin password if using placeholder
+    await _bootstrap_admin_password()
 
     # Start ingestion pipeline as background task
     _ingestion_task = asyncio.create_task(ingestion_service.run())

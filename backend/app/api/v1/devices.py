@@ -70,20 +70,47 @@ async def list_channels(user: CurrentUser, db: AsyncSession = Depends(get_db)):
     ]
 
 
+@router.get("/channels/{channel_id}/thresholds/history", response_model=list[AlarmProfileResponse])
+async def get_channel_threshold_history(
+    channel_id: int,
+    user: CurrentUser,
+    db: AsyncSession = Depends(get_db),
+):
+    from app.models.master import User
+    result = await db.execute(
+        select(AlarmProfile, User)
+        .outerjoin(User, AlarmProfile.approved_by == User.user_id)
+        .where(AlarmProfile.channel_id == channel_id)
+        .order_by(AlarmProfile.profile_version.desc())
+    )
+    rows = result.all()
+    out = []
+    for profile, u in rows:
+        d = AlarmProfileResponse.model_validate(profile)
+        d.changed_by_username = u.username if u else None
+        out.append(d)
+    return out
+
+
 @router.get("/channels/{channel_id}/thresholds", response_model=AlarmProfileResponse)
 async def get_channel_thresholds(
     channel_id: int,
     user: CurrentUser,
     db: AsyncSession = Depends(get_db),
 ):
+    from app.models.master import User
     result = await db.execute(
-        select(AlarmProfile)
+        select(AlarmProfile, User)
+        .outerjoin(User, AlarmProfile.approved_by == User.user_id)
         .where(AlarmProfile.channel_id == channel_id, AlarmProfile.is_current == True)
     )
-    profile = result.scalar_one_or_none()
-    if not profile:
+    row = result.one_or_none()
+    if not row:
         raise HTTPException(status_code=404, detail="No current alarm profile for channel")
-    return AlarmProfileResponse.model_validate(profile)
+    profile, u = row
+    d = AlarmProfileResponse.model_validate(profile)
+    d.changed_by_username = u.username if u else None
+    return d
 
 
 @router.patch("/channels/{channel_id}/thresholds", response_model=AlarmProfileResponse)
@@ -166,4 +193,6 @@ async def update_channel_thresholds(
     })
 
     await db.commit()
-    return AlarmProfileResponse.model_validate(new_profile)
+    d = AlarmProfileResponse.model_validate(new_profile)
+    d.changed_by_username = user.username
+    return d
